@@ -22,18 +22,31 @@
   // constructor
   var Hpm = function (options) {};
 
+  // Command line help, static functions on the App object
+  // -----------------------------------------------------
+
+  Hpm.help = function (topic) {
+
+    if (!topic) {
+      info('-- Htmlapp package manager help --');
+      info('* Hpm.register(<package name>) - register a package in the remote registry.');
+      info('* Hpm.install(<package name>) - install a remote package locally.');
+      return;
+    }
+
+  }
+
   // Export
   // ======
 
-  window['hpm'] = Hpm;
+  window['Hpm'] = Hpm;
 
-  debug('hpm is loaded.');
+  debug('Hpm is loaded.');
 
   // Introduction message
   // ====================
 
-  info('Welcome to hpm!');
-  info("Htmlapp let's you develop web and mobile apps easily. All you need is your web browser.");
-  info("Show the help with Htmlapp.help()")
+  info('Welcome to Hpm - the package manager for Html apps!');
+  info("Show the help with Hpm.help()")
 
 }());
