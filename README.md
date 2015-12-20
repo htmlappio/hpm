@@ -30,7 +30,7 @@ updates of the package in a good way.
 
 Commands to implement:
 
-* Hpm.register(<package def file>, <account id>) - register a package in the remote registry
-* Hpm.install(<package name>) - install a remote package locally
-* Hpm.search(<keywords>) - search for remote packages
-* Hpm.info(<package name>) - show information about package
+* Hpm.register([package def file], [account id]) - register a package in the remote registry
+* Hpm.install([package name]) - install a remote package locally
+* Hpm.search([keywords]) - search for remote packages
+* Hpm.info([package name]) - show information about package
