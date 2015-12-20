@@ -1,0 +1,25 @@
+{
+  "name": "hpm",
+  "version": "0.0.1",
+  "authors": [
+    "Jonas Colmsjö <jonas.colmsjo@gizur.com>"
+  ],
+  "description": "Htmlapp package manager",
+  "main": "hpm.js",
+  "keywords": [
+    "htmlapp",
+    "package",
+    "manager"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "odsync": "~0.1.0"
+  }
+}
