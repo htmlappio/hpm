@@ -16,21 +16,34 @@
 
   ODS = window['odsync'];
 
-  // App Class
+  // private vars
+  // ===========
+
+  var schema = {
+    stores: [{
+      name: 'apps',
+      autoIncrement: false
+    }]
+  };
+
+  var db = new ydn.db.Storage('htmlapps', schema);
+
+  // hpm Class
   // =========
 
   // constructor
-  var Hpm = function (options) {};
+  var hpm = {};
+
 
   // Command line help, static functions on the App object
   // -----------------------------------------------------
 
-  Hpm.help = function (topic) {
+  hpm.help = function (topic) {
 
     if (!topic) {
       info('-- Htmlapp package manager help --');
-      info('* Hpm.register(<package name>) - register a package in the remote registry.');
-      info('* Hpm.install(<package name>) - install a remote package locally.');
+      info('* hpm.register(<package name>) - register a package in the remote registry.');
+      info('* hpm.install(<package name>) - install a remote package locally.');
       return;
     }
 
@@ -39,14 +52,14 @@
   // Export
   // ======
 
-  window['Hpm'] = Hpm;
+  window['hpm'] = hpm;
 
-  debug('Hpm is loaded.');
+  debug('hpm is loaded.');
 
   // Introduction message
   // ====================
 
-  info('Welcome to Hpm - the package manager for Html apps!');
-  info("Show the help with Hpm.help()")
+  info('Welcome to hpm - the package manager for Html apps!');
+  info("Show the help with hpm.help()")
 
 }());
