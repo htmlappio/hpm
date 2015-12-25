@@ -15,6 +15,7 @@ Setup the necessary dependencies in index.html:
   <script src="./bower_components/lodash/lodash.min.js"></script>
   <script src="./bower_components/helpersjs/helpers.js"></script>
   <script src="./bower_components/odsync/index.js"></script>
+  <script src='./bower_components/hpm/hpm.js'></script>
 ```
 
 Now is hpm ready to use. Start with opening the developer console and
