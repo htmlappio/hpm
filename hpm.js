@@ -69,18 +69,17 @@
     .then(function(data){
 
       var d = {
-        json: data[0],
+        packageDef: data[0],
         html: data[1].v,
         css: data[2].v,
         js: data[3].v
       };
 
-      if(!d.json.name || !d.json.description || !d.json.version)
+      if(!d.packageDef.name || !d.packageDef.description || !d.packageDef.version)
         throw 'ERROR: package definition file missing mandatory fields, ' +
           'see hpm.help("create") for more information.';
 
-      log(d.json.name);
-      return db.put("buckets", d, d.json.name);
+      return db.put("buckets", d, d.packageDef.name);
     })
 
   };
@@ -142,6 +141,7 @@
         '\n\t    description: ... ,' +
         '\n\t    version: ... ,' +
         '\n\t    private: ... ' +
+        '\n\t    permissions: ... ' +
         '\n\t  }, "mypackage.json");' +
         '\n\nThe create the package like this:' +
         '\n\nhpm.create(package_def_file, html_file, css_file, js_file, work_store)' +
@@ -165,8 +165,6 @@
         '\ndb.put("work", {v: html}, "hello.html");' +
         '\ndb.put("work", {v: css}, "hello.css");' +
         '\ndb.put("work", {v: js}, "hello.js");';
-
-
 
       info(msg);
 
