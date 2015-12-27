@@ -39,7 +39,39 @@
         throw 'ERROR; url, email, accoundId and password must be configured, ' +
         'see hpm.help("config")';
       return cfg;
-    })
+    });
+  };
+
+
+  hpm.getDb = function (workStore) {
+
+    if (!workStore) workStore = "work";
+
+    return hpm.getConfig()
+      .then(function (cfg) {
+
+        var db = new ydn.db.Storage(cfg.accountId, {
+          stores: [
+            {
+              name: 'buckets',
+              autoIncrement: false
+            },
+            {
+              name: 'packages',
+              autoIncrement: false
+            },
+            {
+              name: workStore,
+              autoIncrement: false
+            }
+          ]
+        });
+
+        return {
+          cfg: cfg,
+          db: db
+        };
+      });
   };
 
   hpm.create = function (packageDef, html, css, js, workStore) {
@@ -48,45 +80,75 @@
     if (!packageDef)
       throw "ERROR: packageDef must be specified!";
 
+
     if (!workStore) workStore = "work";
 
-    return hpm.getConfig()
-    .then(function(cfg){
+    var db;
 
-      db = new ydn.db.Storage(cfg.accountId, {
-        stores: [{
-          name: 'buckets',
-          autoIncrement: false
-        }, {
-          name: workStore,
-          autoIncrement: false
-        }]
-      });
+/*    return hpm.getConfig()
+      .then(function (cfg) {
 
-      var ps = [db.get(workStore, packageDef)];
-      if (html) ps.push(db.get(workStore, html));
-      if (css) ps.push(db.get(workStore, css));
-      if (js) ps.push(db.get(workStore, js));
+        db = new ydn.db.Storage(cfg.accountId, {
+          stores: [{
+            name: 'buckets',
+            autoIncrement: false
+          }, {
+            name: workStore,
+            autoIncrement: false
+          }]
+        });
 
-      return Promise.all(ps);
+        var ps = [db.get(workStore, packageDef)];
+        if (html) ps.push(db.get(workStore, html));
+        if (css) ps.push(db.get(workStore, css));
+        if (js) ps.push(db.get(workStore, js));
 
-    })
-    .then(function(data){
+        return Promise.all(ps);
 
-      var d = {
-        packageDef: data[0],
-        html: data[1].v,
-        css: data[2].v,
-        js: data[3].v
-      };
+      })*/
 
-      if(!d.packageDef.name || !d.packageDef.description || !d.packageDef.version)
-        throw 'ERROR: package definition file missing mandatory fields, ' +
+      return hpm.getDb(workStore)
+      .then(function (d) {
+
+        db = d.db;
+
+        var ps = [db.get(workStore, packageDef)];
+        if (html) ps.push(db.get(workStore, html));
+        if (css) ps.push(db.get(workStore, css));
+        if (js) ps.push(db.get(workStore, js));
+
+        return Promise.all(ps);
+
+      })
+      .then(function (data) {
+
+        var d = {
+          packageDef: data[0],
+          html: data[1].v,
+          css: data[2].v,
+          js: data[3].v
+        };
+
+        if (!d.packageDef.name || !d.packageDef.description || !d.packageDef.version)
+          throw 'ERROR: package definition file missing mandatory fields, ' +
           'see hpm.help("create") for more information.';
 
-      return db.put("buckets", d, 'b_' + d.packageDef.name + '-' + d.packageDef.version);
-    })
+        return db.put("buckets", d, 'b_' + d.packageDef.name + '-' + d.packageDef.version);
+      })
 
+  };
+
+  hpm.register = function(package) {
+
+    return hpm.getDb()
+      .then(function (d) {
+
+        return d.db.put("packages", {
+            accountId: d.cfg.accountId,
+            name: package
+          },
+          package);
+      });
   };
 
   // Command line help, static functions on the App object
@@ -173,6 +235,16 @@
 
       info(msg);
 
+    } else if (topic === 'register') {
+      var msg =
+        'Register a package for download for anyone:' +
+        '\n\nhpm.register("hello");' +
+        footer;
+
+      info(msg);
+
+    } else {
+      info('Uknown help topic: ' + topic);
     }
 
   }
