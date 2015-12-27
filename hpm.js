@@ -45,6 +45,11 @@
   hpm.create = function (packageDef, html, css, js, workStore) {
     var db;
 
+    if (!packageDef)
+      throw "ERROR: packageDef must be specified!";
+
+    if (!workStore) workStore = "work";
+
     return hpm.getConfig()
     .then(function(cfg){
 
@@ -58,12 +63,12 @@
         }]
       });
 
-      return Promise.all([
-        db.get(workStore, packageDef),
-        db.get(workStore, html),
-        db.get(workStore, css),
-        db.get(workStore, js)
-      ]);
+      var ps = [db.get(workStore, packageDef)];
+      if (html) ps.push(db.get(workStore, html));
+      if (css) ps.push(db.get(workStore, css));
+      if (js) ps.push(db.get(workStore, js));
+
+      return Promise.all(ps);
 
     })
     .then(function(data){
@@ -79,7 +84,7 @@
         throw 'ERROR: package definition file missing mandatory fields, ' +
           'see hpm.help("create") for more information.';
 
-      return db.put("buckets", d, d.packageDef.name);
+      return db.put("buckets", d, 'b_' + d.packageDef.name + '-' + d.packageDef.version);
     })
 
   };
@@ -89,20 +94,19 @@
 
   hpm.help = function (topic) {
 
-    var footer = '\n\nSee hpm.help("config") for how to setup the database connection.';
+    var footer = '\n\n-----\nSee hpm.help("config") for how to setup the database connection.';
 
     if (!topic) {
 
       var msg =
         '-- Htmlapp package manager help --' +
         '\n\n* hpm.help("config") - show setup help' +
+        '\n* hpm.help("create") - help with creating packages' +
         '\n* hpm.help("work") - working with files' +
-        '\n* hpm.register(<package name>) - register a package in the remote registry.' +
-        '\n* hpm.create(package_def_file, html_file, css_file, js_file, work_store) - overwrite existing, check version?' +
-        '\n* hpm.load(name, [version]) - take latest version if not specified' +
+        '\n\n* hpm.create(package_def_file, html_file, css_file, js_file, [work_store]) - create new package or update existing package.' +
         '\n* hpm.sync() - uppdat registry med public packages, varna om name är upptaget' +
         '\n* hpm.register(name) - spara rad i b_packages: <account_id>, app id' +
-        '\n* hpm.fetch(name) - kolla att name finns, spara rad i b_packages, hämta vid nästa sync' +
+        '\n* hpm.fetch(name, [version]) - kolla att name finns, spara rad i b_packages, hämta vid nästa sync' +
         '\n* hpm.search(keywords) - lista packages som matchar, registry endast remote, ej lokalt?';
 
       info(msg);
@@ -131,9 +135,9 @@
       info(msg);
     } else if (topic === 'create') {
       var msg =
-        'Your packages are save in a database named with your accountid and the ' +
-        '\nstore named bucket. The key for each packet is b_<package name>-<version>' +
-        '\n<version> should be in the format X.Y.Z, e.g. 1.0.0, using so called ' +
+        'Your packages are saved in a database with the same name as your accountid and the ' +
+        '\nobject store named buckets. The key for each packet is b_<package name>-<version>' +
+        '\nwhere <version> should be in the format X.Y.Z, e.g. 1.0.0, using so called ' +
         '\nsemantic versions, see semver.org' +
         '\n\nThis is an example of a package definition file is created:' +
         '\n\ndb.put("work", { ' +
@@ -142,9 +146,10 @@
         '\n\t    version: ... ,' +
         '\n\t    private: ... ' +
         '\n\t    permissions: ... ' +
+        '\n\t    dependecies: ... (currently only for information, these needs to be fetched manually)' +
         '\n\t  }, "mypackage.json");' +
-        '\n\nThe create the package like this:' +
-        '\n\nhpm.create(package_def_file, html_file, css_file, js_file, work_store)' +
+        '\n\nThen create the package like this:' +
+        '\n\nhpm.create(package_def_file, html_file, css_file, js_file, [work_store])' +
         footer;
 
       info(msg);
