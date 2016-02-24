@@ -20,6 +20,6 @@
     "tests"
   ],
   "dependencies": {
-    "odsync": "~0.1.0"
+    "odsync": "*"
   }
 }

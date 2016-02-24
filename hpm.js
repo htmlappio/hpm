@@ -85,29 +85,29 @@
 
     var db;
 
-/*    return hpm.getConfig()
-      .then(function (cfg) {
+    /*    return hpm.getConfig()
+          .then(function (cfg) {
 
-        db = new ydn.db.Storage(cfg.accountId, {
-          stores: [{
-            name: 'buckets',
-            autoIncrement: false
-          }, {
-            name: workStore,
-            autoIncrement: false
-          }]
-        });
+            db = new ydn.db.Storage(cfg.accountId, {
+              stores: [{
+                name: 'buckets',
+                autoIncrement: false
+              }, {
+                name: workStore,
+                autoIncrement: false
+              }]
+            });
 
-        var ps = [db.get(workStore, packageDef)];
-        if (html) ps.push(db.get(workStore, html));
-        if (css) ps.push(db.get(workStore, css));
-        if (js) ps.push(db.get(workStore, js));
+            var ps = [db.get(workStore, packageDef)];
+            if (html) ps.push(db.get(workStore, html));
+            if (css) ps.push(db.get(workStore, css));
+            if (js) ps.push(db.get(workStore, js));
 
-        return Promise.all(ps);
+            return Promise.all(ps);
 
-      })*/
+          })*/
 
-      return hpm.getDb(workStore)
+    return hpm.getDb(workStore)
       .then(function (d) {
 
         db = d.db;
@@ -138,7 +138,7 @@
 
   };
 
-  hpm.register = function(package) {
+  hpm.register = function (package) {
 
     return hpm.getDb()
       .then(function (d) {
@@ -176,22 +176,25 @@
       return;
     }
 
+
+
     if (topic === 'config') {
       var msg = 'A little configuration needs to be done before hpm can be used:' +
         '\nvar config = {' +
-        '\n\turl: "http://localhost:9000/", ' +
+        '\n\turl: "http://localhost:3000/", ' +
         '\n\temail: "joe@example.com"' +
         '\n};' +
         '\nvar db = new ydn.db.Storage("config", {stores: [{ name: "backend", autoIncrement: false }]});' +
-        '\nOdata.createAccount(config.url, config.email)' +
-        '\n.then(function(res){' +
-        '\n\tconfig.accountId = res.data.d.accountId;' +
-        '\n\treturn Odata.resetPassword(config.url, config.accountId, config.email); ' +
-        '\n})' +
-        '\n.catch(function(err){' +
-        '\n\terror(err);' +
-        '\n})' +
+        '\nOdata.createAccount(config).then(function (res) {' +
+        '\n    config.accountId = res.data[1].accountId;' +
+        '\n  }, function (res) {' +
+        '\n    config.accountId = res.data[1].accountId;' +
+        '\n  })' +
         '\nconfig.password = "check the mail for a password";' +
+        '\n// This also works if you have local odataserver in development mode' +
+        '\nOdata.resetPassword(config).then(function (res) {' +
+        '\nconfig.password = res.data[0].password' +
+        '\n}, console.log.bind("ERROR", console))' +
         '\ndb.put("backend", config, "config");';
 
       info(msg);
