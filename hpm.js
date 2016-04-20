@@ -180,6 +180,7 @@
 
     if (topic === 'config') {
       var msg = 'A little configuration needs to be done before hpm can be used:' +
+        '\n// Step one' +
         '\nvar config = {' +
         '\n\turl: "http://localhost:3000/", ' +
         '\n\temail: "joe@example.com"' +
@@ -190,11 +191,14 @@
         '\n  }, function (res) {' +
         '\n    config.accountId = res.data[1].accountId;' +
         '\n  })' +
+        '\n// Check that the accountId has been stored in config' +
+        '\n// Step two' +
         '\nconfig.password = "check the mail for a password";' +
-        '\n// This also works if you have local odataserver in development mode' +
+        '\n// This also works if you have a odataserver in development mode' +
         '\nOdata.resetPassword(config).then(function (res) {' +
         '\nconfig.password = res.data[0].password' +
         '\n}, console.log.bind("ERROR", console))' +
+        '\n//Step 3' +
         '\ndb.put("backend", config, "config");';
 
       info(msg);
