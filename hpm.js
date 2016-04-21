@@ -74,6 +74,9 @@
       });
   };
 
+  // create a packege locally in the buckets store using html/css/js
+  // from the work store. packageDef is a json with `name`, `description`
+  // and `version`
   hpm.create = function (packageDef, html, css, js, workStore) {
     var db;
 
@@ -219,6 +222,8 @@
         '\n\t  }, "mypackage.json");' +
         '\n\nThen create the package like this:' +
         '\n\nhpm.create(package_def_file, html_file, css_file, js_file, [work_store])' +
+        '\n\nCheck the results with:' +
+        '\n\ndb.get("buckets","b_name-version").then(console.log.bind(console));' +
         footer;
 
       info(msg);

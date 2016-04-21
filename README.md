@@ -50,5 +50,5 @@ by npm):
       }
     }
 
-Use an account at odata.gizur.com for storing packages. This limits
-updates of the package in a good way.
+Use an account at odata.gizur.com for storing packages. The authentication
+here limits updates of the package in a good way.
