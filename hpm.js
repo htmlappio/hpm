@@ -164,15 +164,17 @@
     if (!topic) {
 
       var msg =
-        '-- Htmlapp package manager help --' +
-        '\n\n* hpm.help("register_account") - show setup help' +
-        '\n* hpm.help("create") - help with creating packages' +
-        '\n* hpm.help("work") - working with files' +
-        '\n\n* hpm.create(package_def_file, html_file, css_file, js_file, [work_store]) - create new package or update existing package.' +
-        '\n* hpm.sync() - uppdat registry med public packages, varna om name är upptaget' +
-        '\n* hpm.register(name) - spara rad i b_packages: <account_id>, app id' +
-        '\n* hpm.fetch(name, [version]) - kolla att name finns, spara rad i b_packages, hämta vid nästa sync' +
-        '\n* hpm.search(keywords) - lista packages som matchar, registry endast remote, ej lokalt?';
+        '-- Htmlapp package manager help --'
+        + '\n\n* hpm.help("register_account") - show setup help'
+        + '\n* hpm.help("create") - help with creating packages'
+        + '\n* hpm.help("work") - working with files'
+        + '\n\n* hpm.create(package_def_file, html_file, css_file, js_file, [work_store]) - create new package or update existing package.'
+//      +  '\n* hpm.sync() - uppdat registry med public packages, varna om name är upptaget'
+//      +  '\n* hpm.register(name) - spara rad i b_packages: <account_id>, app id'
+        + '\n* hpm.fetch(name, version) - fetch file from the repository to the local database.'
+        + '\n* hpm.install(name, version) - install app from the repository in the local database.'
+//        + '\n* hpm.search(keywords) - lista packages som matchar, registry endast remote, ej lokalt?'
+        ;
 
       info(msg);
 
