@@ -20,6 +20,6 @@
     "tests"
   ],
   "dependencies": {
-    "odsync": "*"
+    "odapi": "*"
   }
 }
