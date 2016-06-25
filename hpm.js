@@ -165,7 +165,7 @@
 
       var msg =
         '-- Htmlapp package manager help --' +
-        '\n\n* hpm.help("config") - show setup help' +
+        '\n\n* hpm.help("register_account") - show setup help' +
         '\n* hpm.help("create") - help with creating packages' +
         '\n* hpm.help("work") - working with files' +
         '\n\n* hpm.create(package_def_file, html_file, css_file, js_file, [work_store]) - create new package or update existing package.' +
@@ -179,9 +179,7 @@
       return;
     }
 
-
-
-    if (topic === 'config') {
+    if (topic === 'register_account') {
       var msg = 'A little configuration needs to be done before hpm can be used:' +
         '\n// Step one' +
         '\nvar config = {' +
@@ -213,17 +211,17 @@
         '\nsemantic versions, see semver.org' +
         '\n\nThis is an example of a package definition file is created:' +
         '\n\ndb.put("work", { ' +
-        '\n\t   name: ... ,' +
-        '\n\t    description: ... ,' +
-        '\n\t    version: ... ,' +
-        '\n\t    private: ... ' +
-        '\n\t    permissions: ... ' +
-        '\n\t    dependecies: ... (currently only for information, these needs to be fetched manually)' +
+        '\n\t   name: "hello",' +
+        '\n\t    description: "hello world example" ,' +
+        '\n\t    version: "0.0.1" ,' +
+        '\n\t    private: true , ' +
+        '\n\t    permissions: null , ' +
+        '\n\t    dependecies: "None (currently only for information, these needs to be fetched manually)"' +
         '\n\t  }, "mypackage.json");' +
         '\n\nThen create the package like this:' +
-        '\n\nhpm.create(package_def_file, html_file, css_file, js_file, [work_store])' +
+        '\n\nhpm.create("mypackage.json", "hello.html", "hello.css", "hello.js", [work_store])' +
         '\n\nCheck the results with:' +
-        '\n\ndb.get("buckets","b_name-version").then(console.log.bind(console));';
+        '\n\ndb.get("buckets","b_hello-0.0.1").then(console.log.bind(console));';
 
       info(msg);
     } else if (topic === 'work') {
@@ -248,7 +246,7 @@
 
     } else if (topic === 'register') {
       var msg =
-        'Register a package for download for anyone:' +
+        'Register a package so it can be downloaded by anyone (not implemented yet):' +
         '\n\nhpm.register("hello");' +
         footer;
 
