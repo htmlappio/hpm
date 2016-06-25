@@ -223,8 +223,7 @@
         '\n\nThen create the package like this:' +
         '\n\nhpm.create(package_def_file, html_file, css_file, js_file, [work_store])' +
         '\n\nCheck the results with:' +
-        '\n\ndb.get("buckets","b_name-version").then(console.log.bind(console));' +
-        footer;
+        '\n\ndb.get("buckets","b_name-version").then(console.log.bind(console));';
 
       info(msg);
     } else if (topic === 'work') {
@@ -271,7 +270,8 @@
   // Introduction message
   // ====================
 
-  info('Welcome to hpm - the package manager for Html apps!');
-  info("Show the help with hpm.help()")
+  // Htmlapp will show a welcome message
+  //info('Welcome to hpm - the package manager for Html apps!');
+  //info("Show the help with hpm.help()")
 
 }());
