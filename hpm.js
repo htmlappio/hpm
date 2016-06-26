@@ -19,7 +19,7 @@
   // private vars
   // ===========
 
-  // hpm Class
+  // hpm class
   // =========
 
   // constructor
@@ -88,28 +88,6 @@
 
     var db;
 
-    /*    return hpm.getConfig()
-          .then(function (cfg) {
-
-            db = new ydn.db.Storage(cfg.accountId, {
-              stores: [{
-                name: 'buckets',
-                autoIncrement: false
-              }, {
-                name: workStore,
-                autoIncrement: false
-              }]
-            });
-
-            var ps = [db.get(workStore, packageDef)];
-            if (html) ps.push(db.get(workStore, html));
-            if (css) ps.push(db.get(workStore, css));
-            if (js) ps.push(db.get(workStore, js));
-
-            return Promise.all(ps);
-
-          })*/
-
     return hpm.getDb(workStore)
       .then(function (d) {
 
@@ -139,6 +117,27 @@
         return db.put("buckets", d, 'b_' + d.packageDef.name + '-' + d.packageDef.version);
       })
 
+  };
+
+  // url_path ::= [account_id]/[bucket name]$[filename.(html|css|js)]$[semver]
+  // examples: a123456789/b_helloapp$hello.html$0.0.1
+  //           a123456789/b_helloapp$hello.css$0.0.1
+  //           a123456789/b_helloapp$hello.js$0.0.1
+  hpm.fetch = function (accountId, bucket, filename, work_store) {
+
+    if (!workStore) workStore = "work";
+
+    return hpm.getDb()
+      .then(function (res) {
+
+        var od = new Odata(res.cfg);
+        var db = res.db;
+
+        od.fetch(accountId, bucket+'$'+filename).then(function(res){
+          db.put(workStore, {v: res}, filename);
+        });
+
+      });
   };
 
   hpm.register = function (package) {
@@ -171,8 +170,9 @@
         + '\n\n* hpm.create(package_def_file, html_file, css_file, js_file, [work_store]) - create new package or update existing package.'
 //      +  '\n* hpm.sync() - uppdat registry med public packages, varna om name är upptaget'
 //      +  '\n* hpm.register(name) - spara rad i b_packages: <account_id>, app id'
-        + '\n* hpm.fetch(name, version) - fetch file from the repository to the local database.'
-        + '\n* hpm.install(name, version) - install app from the repository in the local database.'
+        + '\n* hpm.fetch(account_id, filename, [work_store]) - fetch file from the repository to the local database.'
+        + '\n* hpm.store(account_id, filename, [work_store]) - store file to the repository from the local database.'
+// Fetch and then create        + '\n* hpm.install(name, version) - install app from the repository in the local database.'
 //        + '\n* hpm.search(keywords) - lista packages som matchar, registry endast remote, ej lokalt?'
         ;
 
