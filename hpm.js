@@ -123,7 +123,7 @@
   // examples: a123456789/b_helloapp$hello.html$0.0.1
   //           a123456789/b_helloapp$hello.css$0.0.1
   //           a123456789/b_helloapp$hello.js$0.0.1
-  hpm.fetch = function (accountId, bucket, filename, work_store) {
+  hpm.fetch = function (accountId, bucket, filename, workStore) {
 
     if (!workStore) workStore = "work";
 
@@ -133,8 +133,9 @@
         var od = new Odata(res.cfg);
         var db = res.db;
 
-        od.fetch(accountId, bucket+'$'+filename).then(function(res){
-          db.put(workStore, {v: res}, filename);
+        // TODO: odapi expects the URL in options to end with a / while hpm does not
+        od.fetch('/'+accountId, bucket+'$'+filename).then(function(res){
+          db.put(workStore, {v: res.data}, filename);
         });
 
       });
@@ -170,8 +171,8 @@
         + '\n\n* hpm.create(package_def_file, html_file, css_file, js_file, [work_store]) - create new package or update existing package.'
 //      +  '\n* hpm.sync() - uppdat registry med public packages, varna om name är upptaget'
 //      +  '\n* hpm.register(name) - spara rad i b_packages: <account_id>, app id'
-        + '\n* hpm.fetch(account_id, filename, [work_store]) - fetch file from the repository to the local database.'
-        + '\n* hpm.store(account_id, filename, [work_store]) - store file to the repository from the local database.'
+        + '\n* hpm.fetch(accountId, bucket, filename, [work_store]) - fetch file from the repository to the local database.'
+//        + '\n* hpm.store(account_id, filename, [work_store]) - store file to the repository from the local database.'
 // Fetch and then create        + '\n* hpm.install(name, version) - install app from the repository in the local database.'
 //        + '\n* hpm.search(keywords) - lista packages som matchar, registry endast remote, ej lokalt?'
         ;
@@ -242,7 +243,9 @@
         '\nvar css = "body {background: rgba(234, 159, 195, 0.8);}"' +
         '\ndb.put("work", {v: html}, "hello.html");' +
         '\ndb.put("work", {v: css}, "hello.css");' +
-        '\ndb.put("work", {v: js}, "hello.js");';
+        '\ndb.put("work", {v: js}, "hello.js");' +
+        '\n\nClear the object store "work"' +
+        '\ndb.clear("work");';
 
       info(msg);
 
