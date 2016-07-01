@@ -15,6 +15,7 @@
   // =======
 
   ODS = window['odsync'];
+  R = window['remote'];
 
   // private vars
   // ===========
@@ -135,6 +136,21 @@
 
         // TODO: odapi expects the URL in options to end with a / while hpm does not
         od.fetch('/'+accountId, bucket+'$'+filename).then(function(res){
+          db.put(workStore, {v: res.data}, filename);
+        });
+
+      });
+  };
+
+  hpm.fetchAny = function (url, workStore) {
+
+    if (!workStore) workStore = "work";
+
+    return hpm.getDb()
+      .then(function (res) {
+        var db = res.db;
+
+        R.xhr(url, 'GET').then(function(res){
           db.put(workStore, {v: res.data}, filename);
         });
 
