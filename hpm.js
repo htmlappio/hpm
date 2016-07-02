@@ -142,15 +142,16 @@
       });
   };
 
-  hpm.fetchAny = function (url, workStore) {
+  hpm.fetchAny = function (url, workStore, method, data, headers, mimeType, user, password) {
 
-    if (!workStore) workStore = "work";
+    workStore = workStore || "work";
+    method = method || "GET";
 
     return hpm.getDb()
       .then(function (res) {
         var db = res.db;
 
-        R.xhr(url, 'GET').then(function(res){
+        R.xhr(url, method, data, headers, mimeType, user, password).then(function(res){
           db.put(workStore, {v: res.data}, filename);
         });
 
@@ -188,7 +189,7 @@
 //      +  '\n* hpm.sync() - uppdat registry med public packages, varna om name är upptaget'
 //      +  '\n* hpm.register(name) - spara rad i b_packages: <account_id>, app id'
         + '\n* hpm.fetch(accountId, bucket, filename, [work_store]) - fetch file from the repository to the local database.'
-        + '\n* hpm.fetchAny(url, [work_store]) - fetch file from any URL to the local database.'
+        + '\n* hpm.fetchAny(url, [workStore, method, data, headers, mimeType, user, password]) - fetch file from any URL to the local database.'
 //        + '\n* hpm.store(account_id, filename, [work_store]) - store file to the repository from the local database.'
 // Fetch and then create        + '\n* hpm.install(name, version) - install app from the repository in the local database.'
 //        + '\n* hpm.search(keywords) - lista packages som matchar, registry endast remote, ej lokalt?'
